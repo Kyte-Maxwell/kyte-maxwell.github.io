@@ -1,3 +1,9 @@
 body {
   background-color: lightgrey;
 }
+td {
+  height: 100px;
+  width: 100px;
+  background-color: darkgrey;
+  text-align: center;
+}
