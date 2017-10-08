@@ -1,0 +1,21 @@
+body {
+  background-color: lightgrey;
+}
+
+table {
+  width: 85%;
+  height: 85%;
+}
+
+td {
+  height: 15%;
+  width: 15%;
+  background-color: darkgrey;
+  text-align: center;
+  transition: background-color 2s, width .5s, height .5s;
+}
+
+td:hover {
+  height: 20%;
+  width: 20%;
+}
