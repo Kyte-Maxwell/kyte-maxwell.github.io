@@ -6,7 +6,7 @@ function getJSON() {
 		     jsonText = JSON.parse(variable.responseText);
 	      }
       };
-      variable.open("GET", "JSONTest.txt", true);
+      variable.open("GET", "https://kyte-maxwell.github.io/JSONTest.txt", true);
       variable.send();
       document.getElementById("Output").innerHTML = jsonText;
 }
