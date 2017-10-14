@@ -32,8 +32,7 @@ function getQuestion() {
   var jArray;
   variable.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-         jArray = JSON.parse(this.responseText);
-         setQuestion(jArray);
+         setQuestion(JSON.parse(this.responseText));
      }
   };
   variable.open("GET", "AJAXQuiz1.txt", true);
@@ -45,8 +44,7 @@ function getAnswer(questionNum, questionType) {
   var jArray;
   variable.onreadystatechange = function() {
 	   if (this.readyState == 4 && this.status == 200) {
-		     jArray = JSON.parse(this.responseText);
-         setAnswer(questionNum, questionType, jArray);
+		     setAnswer(questionNum, questionType, JSON.parse(this.responseText));
 	   }
   };
   variable.open("GET", "AJAXQuiz1.txt", true);
