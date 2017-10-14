@@ -1,4 +1,9 @@
-function setQuestion(url, jArray, questionType, questionNum) {
+var questionType;
+var questionNum;
+var quizURL;
+
+function setQuestion(jText) {
+  var jArray = JSON.parse(jText);
   questionNum = Math.floor(Math.random() * jArray.length);
   questionType = Math.floor(Math.random() * 2);
   var question
@@ -7,13 +12,13 @@ function setQuestion(url, jArray, questionType, questionNum) {
   } else {
     question = "What state is " + jArray[questionNum].capital + " the capital of?";
   }
-  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + url + ", setAnswer, " + questionType + ", " + questionNum + ")'>Answer</button><p id = 'output'>";
+  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + quizURL + ", setAnswer, " + questionType + ", " + questionNum + ")'>Answer</button><p id = 'output'>";
   document.getElementById("Response").innerHTML = questionCode;
 }
 
-function setAnswer(url, jArray, questionType, questionNum) {
+function setAnswer(jText) {
   var answer;
-  var jArray = readJSON();
+  var jArray = JSON.parse(jText);
   if (questionType == 0) {
     answer = jArray[questionNum].capital;
   } else {
@@ -27,12 +32,12 @@ function setAnswer(url, jArray, questionType, questionNum) {
   }
 }
 
-function getJSON(url, setFunction, questionType, questionNum) {
+function getJSON(url, setFunction) {
+  quizURL = url;
   var variable = new XMLHttpRequest();
-  var jArray;
   variable.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-         setFunction(url, JSON.parse(this), questionType, questionNum);
+         setFunction(this);
      }
   };
   variable.open("GET", url, true);
