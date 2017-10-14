@@ -1,7 +1,7 @@
 function getQuestion() {
   var jArray = readJSON();
-  var questionNum = var x = Math.floor(Math.random() * jArray.length);
-  var questionType = var x = Math.floor(Math.random() * 2);
+  var questionNum = Math.floor(Math.random() * jArray.length);
+  var questionType = Math.floor(Math.random() * 2);
   var question
   if (questionType == 0) {
     question = "What is the capital of " + jArray[questionNum].0;
