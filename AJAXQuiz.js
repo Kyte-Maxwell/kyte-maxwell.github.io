@@ -37,7 +37,7 @@ function getJSON(url, setFunction) {
   var variable = new XMLHttpRequest();
   variable.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-         setFunction(this);
+         setFunction(this.responseText);
      }
   };
   variable.open("GET", url, true);
