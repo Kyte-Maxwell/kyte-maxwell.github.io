@@ -4,9 +4,9 @@ function getQuestion() {
   var questionType = Math.floor(Math.random() * 2);
   var question
   if (questionType == 0) {
-    question = "What is the capital of " + jArray[questionNum].0;
+    question = "What is the capital of " + jArray[questionNum].state;
   } else {
-    question = "What state is " + jArray[questionNum].1 + " the capital of?";
+    question = "What state is " + jArray[questionNum].capital + " the capital of?";
   }
   var questionCode = "<input type = 'text' id = 'field'><button onclick = 'answerQuestion(" + questionNum + ", " + questionType + ")'>Answer</button><p id = 'output'>";
   document.getElementById("Response").innerHTML = questionCode;
@@ -16,9 +16,9 @@ function answerQuestion(questionNum, questionType) {
   var answer;
   var jArray = readJSON();
   if (questionType == 0) {
-    answer = jArray[questionNum].1;
+    answer = jArray[questionNum].capital;
   } else {
-    answer = jArray[questionNum].0;
+    answer = jArray[questionNum].state;
   }
   var field = document.getElementById("field").value;
   if (answer == field) {
