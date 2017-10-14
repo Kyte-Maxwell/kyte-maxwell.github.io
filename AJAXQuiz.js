@@ -1,17 +1,17 @@
-function setQuestion(jArray) {
-  var questionNum = Math.floor(Math.random() * jArray.length);
-  var questionType = Math.floor(Math.random() * 2);
+function setQuestion(url, jArray, questionType, questionNum) {
+  questionNum = Math.floor(Math.random() * jArray.length);
+  questionType = Math.floor(Math.random() * 2);
   var question
   if (questionType == 0) {
     question = "What is the capital of " + jArray[questionNum].state;
   } else {
     question = "What state is " + jArray[questionNum].capital + " the capital of?";
   }
-  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getAnswer(" + questionNum + ", " + questionType + ")'>Answer</button><p id = 'output'>";
+  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + url + ", setAnswer, " + questionType + ", " + questionNum + ")'>Answer</button><p id = 'output'>";
   document.getElementById("Response").innerHTML = questionCode;
 }
 
-function setAnswer(questionNum, questionType, jArray) {
+function setAnswer(url, jArray, questionType, questionNum) {
   var answer;
   var jArray = readJSON();
   if (questionType == 0) {
@@ -27,26 +27,14 @@ function setAnswer(questionNum, questionType, jArray) {
   }
 }
 
-function getQuestion() {
+function getJSON(url, setFunction, questionType, questionNum) {
   var variable = new XMLHttpRequest();
   var jArray;
   variable.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
-         setQuestion(JSON.parse(this.responseText));
+         setFunction(url, JSON.parse(this), questionType, questionNum);
      }
   };
-  variable.open("GET", "AJAXQuiz1.txt", true);
-  variable.send();
-}
-
-function getAnswer(questionNum, questionType) {
-  var variable = new XMLHttpRequest();
-  var jArray;
-  variable.onreadystatechange = function() {
-	   if (this.readyState == 4 && this.status == 200) {
-		     setAnswer(questionNum, questionType, JSON.parse(this.responseText));
-	   }
-  };
-  variable.open("GET", "AJAXQuiz1.txt", true);
+  variable.open("GET", url, true);
   variable.send();
 }
