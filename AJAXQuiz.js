@@ -1,5 +1,4 @@
-function getQuestion() {
-  var jArray = readJSON();
+function setQuestion(jArray) {
   var questionNum = Math.floor(Math.random() * jArray.length);
   var questionType = Math.floor(Math.random() * 2);
   var question
@@ -8,11 +7,11 @@ function getQuestion() {
   } else {
     question = "What state is " + jArray[questionNum].capital + " the capital of?";
   }
-  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'answerQuestion(" + questionNum + ", " + questionType + ")'>Answer</button><p id = 'output'>";
+  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getAnswer(" + questionNum + ", " + questionType + ")'>Answer</button><p id = 'output'>";
   document.getElementById("Response").innerHTML = questionCode;
 }
 
-function answerQuestion(questionNum, questionType) {
+function setAnswer(questionNum, questionType, jArray) {
   var answer;
   var jArray = readJSON();
   if (questionType == 0) {
@@ -28,13 +27,26 @@ function answerQuestion(questionNum, questionType) {
   }
 }
 
-function readJSON() {
+function getQuestion() {
+  var variable = new XMLHttpRequest();
+  var jArray;
+  variable.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+         jArray = JSON.parse(this.responseText);
+         setQuestion(jArray);
+     }
+  };
+  variable.open("GET", "AJAXQuiz1.txt", true);
+  variable.send();
+}
+
+function getAnswer(questionNum, questionType) {
   var variable = new XMLHttpRequest();
   var jArray;
   variable.onreadystatechange = function() {
 	   if (this.readyState == 4 && this.status == 200) {
 		     jArray = JSON.parse(this.responseText);
-         return jArray;
+         setAnswer(questionNum, questionType, jArray);
 	   }
   };
   variable.open("GET", "AJAXQuiz1.txt", true);
