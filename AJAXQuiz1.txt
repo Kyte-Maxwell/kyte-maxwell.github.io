@@ -1,7 +1,1 @@
-{'states':
-[
-{'state':'Alabama','capital':'Montgomery'}
-{'state':'Alaska','capital':'Juneau'}
-{'state':'Arizona','capital':'Phoenix'}
-]
-}
+{"states":[{"state":"Alabama","capital":"Montgomery"}, {"state":"Alaska","capital":"Juneau"}, {"state":"Arizona","capital":"Phoenix"}]}
