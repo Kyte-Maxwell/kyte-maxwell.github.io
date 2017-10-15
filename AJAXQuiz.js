@@ -4,13 +4,13 @@ var quizURL;
 
 function setQuestion(jText) {
   var jArray = JSON.parse(jText);
-  questionNum = Math.floor(Math.random() * jArray.length);
+  questionNum = Math.floor(Math.random() * jArray.states.length);
   questionType = Math.floor(Math.random() * 2);
   var question
   if (questionType == 0) {
-    question = "What is the capital of " + jArray[questionNum].state;
+    question = "What is the capital of " + jArray.states[questionNum].state;
   } else {
-    question = "What state is " + jArray[questionNum].capital + " the capital of?";
+    question = "What state is " + jArray.states[questionNum].capital + " the capital of?";
   }
   var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + quizURL + ", setAnswer, " + questionType + ", " + questionNum + ")'>Answer</button><p id = 'output'>";
   document.getElementById("Response").innerHTML = questionCode;
@@ -20,9 +20,9 @@ function setAnswer(jText) {
   var answer;
   var jArray = JSON.parse(jText);
   if (questionType == 0) {
-    answer = jArray[questionNum].capital;
+    answer = jArray.states[questionNum].capital;
   } else {
-    answer = jArray[questionNum].state;
+    answer = jArray.states[questionNum].state;
   }
   var field = document.getElementById("field").value;
   if (answer == field) {
