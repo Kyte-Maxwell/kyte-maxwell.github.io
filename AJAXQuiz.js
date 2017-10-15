@@ -9,11 +9,11 @@ function setQuestion(jString) {
   questionType = Math.floor(Math.random() * 2);
   var question
   if (questionType == 0) {
-    question = "What is the capital of " + jArray.states[questionNum].state;
+    question = "What is the capital of " + jArray.states[questionNum].state + "?";
   } else {
     question = "What state is " + jArray.states[questionNum].capital + " the capital of?";
   }
-  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + quizURL + ", setAnswer, " + questionType + ", " + questionNum + ")'>Answer</button><p id = 'output'></p>";
+  var questionCode = "<input type = 'text' id = 'field'><button onclick = 'getJSON(" + quizURL + ", setAnswer)'>Answer</button><p id = 'output'></p>";
   document.getElementById("Question").innerHTML = question;
   document.getElementById("Response").innerHTML = questionCode;
 }
