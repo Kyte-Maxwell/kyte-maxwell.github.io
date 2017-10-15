@@ -3,6 +3,7 @@ var questionNum;
 var quizURL;
 
 function setQuestion(jArray) {
+  var type = typeof jArray;
   questionNum = Math.floor(Math.random() * jArray.states.length);
   questionType = Math.floor(Math.random() * 2);
   var question
