@@ -14,9 +14,9 @@ function setQuestion(jString) {
     question = "What state is " + jArray.states[questionNum].capital + " the capital of?";
   }
   var questionCode = "<input type = 'text' id = 'field'><button id = 'button'>Answer</button><p id = 'output'></p>";
-  document.getElementById("button").addEventListener("click", getJSON(quizURL, setAnswer));
   document.getElementById("Question").innerHTML = question;
   document.getElementById("Response").innerHTML = questionCode;
+  document.getElementById("button").addEventListener("click", getJSON(quizURL, setAnswer));
 }
 
 function setAnswer(jString) {
