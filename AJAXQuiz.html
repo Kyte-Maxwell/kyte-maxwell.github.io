@@ -4,8 +4,11 @@
     <script src="AJAXQuiz.js"></script>
   </head>
   <body>
-    <button onclick="getJSON('AJAXQuiz1.txt', setQuestion, 0, 0)">New question</button>
+    <button onclick="getJSON('AJAXQuiz1.txt', setQuestion)">New question</button>
     <div id="Question"></div>
+    <input type = 'text' id = 'field'>
+    <button id = 'button' onclick = "getJSON('AJAXQuiz1.txt', setAnswer)">Answer</button>
+    <p id = 'output'></p>
     <p id="Response"></p>
   </body>
 </html>
