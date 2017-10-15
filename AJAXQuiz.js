@@ -4,7 +4,7 @@ var quizURL;
 
 function setQuestion(jString) {
   var type = typeof jString;
-  var jArray = JSON.parse(jArray);
+  var jArray = JSON.parse(jString);
   questionNum = Math.floor(Math.random() * jArray.states.length);
   questionType = Math.floor(Math.random() * 2);
   var question
@@ -18,7 +18,7 @@ function setQuestion(jString) {
 }
 
 function setAnswer(jString) {
-  var jArray = JSON.parse(jArray);
+  var jArray = JSON.parse(jString);
   var answer;
   if (questionType == 0) {
     answer = jArray.states[questionNum].capital;
