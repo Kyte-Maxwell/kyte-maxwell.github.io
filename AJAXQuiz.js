@@ -13,7 +13,7 @@ function setQuestion(jString) {
   } else {
     question = "What state is " + jArray.states[questionNum].capital + " the capital of?";
   }
-  var questionCode = "<input type = 'text' id = 'field'><button id = "button">Answer</button><p id = 'output'></p>";
+  var questionCode = "<input type = 'text' id = 'field'><button id = 'button'>Answer</button><p id = 'output'></p>";
   document.getElementById("button").addEventListener("click", getJSON(quizURL, setAnswer));
   document.getElementById("Question").innerHTML = question;
   document.getElementById("Response").innerHTML = questionCode;
