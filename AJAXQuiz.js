@@ -14,6 +14,7 @@ function setQuestion(jString) {
     question = "What state is " + jArray.states[questionNum].capital + " the capital of?";
   }
   document.getElementById("Question").innerHTML = question;
+  document.getElementById("output").innerHTML = "";
 }
 
 function setAnswer(jString) {
