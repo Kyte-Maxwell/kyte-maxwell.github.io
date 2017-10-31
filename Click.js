@@ -3,9 +3,15 @@ var timer;
 var number = 0;
 
 function newGame() {
+  number = 0;
+  clearInterval(timer);
   timer = setInterval(makeTarget, speed);
-  var divs = document.getElementsByClassName("target");
-  divs.length = 0;
+  var images = document.getElementsByTagName("img");
+  var imageNum = images.length;
+  for (var i = 0; i < imageNum; i++) {
+    images[i].parentNode.removeChild(images[i]);
+  }
+  document.getElementById("score").innerHTML = 0;
 }
 
 function makeTarget() {
