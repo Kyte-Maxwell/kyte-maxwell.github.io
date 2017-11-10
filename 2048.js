@@ -1,19 +1,21 @@
-var z;
 var xTouch = null;
 var yTouch = null;
 document.onkeydown = function(a) {
   switch (a.keyCode) {
     case 37:
-      left(z);
+      left();
       break;
     case 38:
-      up(z);
+      up();
       break;
     case 39:
-      right(z);
+      right();
       break;
     case 40:
-      down(z);
+      down();
+      break;
+    case 32:
+      space();
       break;
   }
 }
@@ -23,6 +25,57 @@ var swipeSound = new Audio('2048swipe.mp3');
 
 document.addEventListener('touchstart', touchStart, false);
 document.addEventListener('touchmove', touchMove, false);
+
+function newGame() {
+  var divs = document.getElementsByTagName('div');
+  for (var i = divs.length - 1; i > -1; i--) {
+    divs[i].parentNode.removeChild(divs[i]);
+  }
+  newBlock();
+  gameState = 2;
+  if (window.innerHeight < window.innerWidth) {
+    document.getElementById("gameButton").className = "gameStart";
+  }
+}
+
+function newBlock() {
+  var done = false;
+  while (!done) {
+    var newBlock = document.createElement('div');
+    newBlock.innerHTML = "<span>2</span>";
+    newBlock.className = "class2";
+    var xGrid = Math.floor((Math.random() * 4));
+    var yGrid = Math.floor((Math.random() * 4) + 1);
+    newBlock.x = (xGrid + 1);
+    newBlock.y = (yGrid);
+    var divs = document.getElementsByTagName("div");
+    var match = false;
+    for (var i = 0; i < divs.length; i++) {
+      if (divs[i].x == newBlock.x && divs[i].y == newBlock.y) {
+        match = true;
+      }
+    }
+    if (match == false) {
+      var trs = document.getElementsByTagName("tr");
+      var space = trs[xGrid].childNodes[yGrid];
+      var x = space.offsetLeft;
+      var y = space.offsetTop;
+      newBlock.style.left = x;
+      newBlock.style.top = y;
+      var grid = document.getElementById("grid");
+      grid.appendChild(newBlock);
+      done = true;
+    }
+  }
+}
+
+function space() {
+  var divs = document.getElementsByTagName("div");
+  for (var i = 0; i < divs.length; i++) {
+    divs[i].childNodes[0].innerHTML *= 2;
+    divs[i].className = "class" + divs[i].childNodes[0].innerHTML;
+  }
+}
 
 function touchStart(touchEvent) {
   xTouch = touchEvent.touches[0].clientX;
@@ -37,70 +90,21 @@ function touchMove(touchEvent) {
     var yChange = yTouch - yEnd;
     if (Math.abs(xChange) > Math.abs(yChange)) {
       if (xChange > 0) {
-        left(z);
+        left();
       } else {
-        right(z);
+        right();
       }
     } else {
       if (yChange > 0) {
-        up(z);
+        up();
       } else {
-        down(z);
+        down();
       }
     }
     xTouch = null;
     yTouch = null;
   } else {
     return;
-  }
-}
-
-function createGrid() {
-  var array = new Array(4);
-  for (var i = 0; i < 4; i++) {
-    array[i] = new Array(4).fill("&nbsp;");
-  }
-  var x = Math.floor(Math.random() * 4);
-  var y = Math.floor(Math.random() * 4);
-  array[x][y] = 2;
-  z = array;
-  displayGrid(z);
-}
-
-function displayGrid(z) {
-  gameState = 2;
-  var table = '<table>';
-  for (var i = 0; i < z.length; i++) {
-    table += '<tr>';
-    for(var j = 0; j < z[i].length; j++) {
-      table += '<td>' + z[i][j] + '</td>';
-    }
-    table += '</tr>';
-  }
-  table += '</table>';
-  document.getElementById("grid").innerHTML = table;
-  checkWinLose(z);
-}
-
-function checkWinLose(z) {
-  var empty = 0;
-  var win = 0;
-  for (var i = 0; i < z.length; i++) {
-    for(var j = 0; j < z[i].length; j++) {
-      if (z[i][j] == "&nbsp;") {
-        empty = 1;
-      }
-      if (z[i][j] == 2048) {
-        win = 1;
-      }
-    }
-  }
-  if (win == 1) {
-    gameState = 1;
-    displayWin();
-  } else if (empty == 0) {
-    gameState = 1;
-    displayLose();
   }
 }
 
@@ -142,131 +146,182 @@ function displayLose() {
   grid.appendChild(canvas);
 }
 
-function addNum(z) {
-  var done = 0;
-  while (done == 0) {
-    var x = Math.floor(Math.random() * 4);
-    var y = Math.floor(Math.random() * 4);
-    if(z[x][y] == "&nbsp;") {
-      z[x][y] = 2;
-      done = 1;
-    }
-  }
-}
-
-
-function left(z) {
+function left() {
   if (gameState == 1) {
     return;
   }
-  var moved = 0;
-  for(var a = 0; a < 3; a++) {
-    for(var i = 0; i < 4; i++) {
-      for(var j = 3; j > 0; j--) {
-        if(z[i][j] !== "&nbsp;") {
-          if(z[i][j-1] == "&nbsp;") {
-            z[i][j-1] = z[i][j];
-            z[i][j] = "&nbsp;";
-            moved = 1;
-          } else if(z[i][j-1] == z[i][j]) {
-            z[i][j-1] = z[i][j] * 2;
-            z[i][j] = "&nbsp;";
-            moved = 1;
+  var moved = false;
+  var divs = document.getElementsByTagName("div");
+  for (var y = 2; y < 5; y++) {
+    for (var i = divs.length - 1; i > -1; i--) {
+      if (divs[i].y == y) {
+        var isMoved;
+        do {
+          var oldX = divs[i].x;
+          var oldY = divs[i].y;
+          var newX = divs[i].x;
+          var newY = parseInt(divs[i].y) - 1;
+          isMoved = moveBlock(oldX, oldY, newX, newY);
+          if (isMoved) {
+            moved = true;
           }
         }
+        while (isMoved && divs[i] != null);
       }
     }
   }
-  if(moved == 1) {
-    addNum(z);
+  if (moved) {
     swipeSound.play();
+    newBlock();
   }
-  displayGrid(z);
 }
 
-function right(z) {
+function right() {
   if (gameState == 1) {
     return;
   }
-  var moved = 0;
-  for(var a = 0; a < 3; a++) {
-    for(var i = 0; i < 4; i++) {
-      for(var j = 0; j < 3; j++) {
-        if(z[i][j] !== "&nbsp;") {
-          if(z[i][j+1] == "&nbsp;") {
-            z[i][j+1] = z[i][j];
-            z[i][j] = "&nbsp;";
-            moved = 1;
-          } else if(z[i][j+1] == z[i][j]) {
-            z[i][j+1] = z[i][j] * 2;
-            z[i][j] = "&nbsp;";
-            moved = 1;
+  var moved = false;
+  var divs = document.getElementsByTagName("div");
+  for (var y = 3; y > 0; y--) {
+    for (var i = divs.length - 1; i > -1; i--) {
+      if (divs[i].y == y) {
+        var isMoved;
+        do {
+          var oldX = divs[i].x;
+          var oldY = divs[i].y;
+          var newX = divs[i].x;
+          var newY = parseInt(divs[i].y) + 1;
+          isMoved = moveBlock(oldX, oldY, newX, newY);
+          if (isMoved) {
+            moved = true;
           }
         }
+        while (isMoved && divs[i] != null);
       }
     }
   }
-  if(moved == 1) {
-    addNum(z);
+  if (moved) {
     swipeSound.play();
+    newBlock();
   }
-  displayGrid(z);
 }
 
-function up(z) {
+function down() {
   if (gameState == 1) {
     return;
   }
-  var moved = 0;
-  for(var a = 0; a < 3; a++) {
-    for(var i = 3; i > 0; i--) {
-      for(var j = 0; j < 4; j++) {
-        if(z[i][j] !== "&nbsp;") {
-          if(z[i-1][j] == "&nbsp;") {
-            z[i-1][j] = z[i][j];
-            z[i][j] = "&nbsp;";
-            moved = 1;
-          } else if(z[i-1][j] == z[i][j]) {
-            z[i-1][j] = z[i][j] * 2;
-            z[i][j] = "&nbsp;";
-            moved = 1;
+  var moved = false;
+  var divs = document.getElementsByTagName("div");
+  for (var x = 3; x > 0; x--) {
+    for (var i = divs.length - 1; i > -1; i--) {
+      if (divs[i].x == x) {
+        var isMoved;
+        do {
+          var oldX = divs[i].x;
+          var oldY = divs[i].y;
+          var newX = parseInt(divs[i].x) + 1;
+          var newY = divs[i].y;
+          isMoved = moveBlock(oldX, oldY, newX, newY);
+          if (isMoved) {
+            moved = true;
           }
         }
+        while (isMoved && divs[i] != null);
       }
     }
   }
-  if(moved == 1) {
-    addNum(z);
+  if (moved) {
     swipeSound.play();
+    newBlock();
   }
-  displayGrid(z);
 }
 
-function down(z) {
+function up() {
   if (gameState == 1) {
     return;
   }
-  var moved = 0;
-  for(var a = 0; a < 3; a++) {
-    for(var i = 0; i < 3; i++) {
-      for(var j = 0; j < 4; j++) {
-        if(z[i][j] !== "&nbsp;") {
-          if(z[i+1][j] == "&nbsp;") {
-            z[i+1][j] = z[i][j];
-            z[i][j] = "&nbsp;";
-            moved = 1;
-          } else if(z[i+1][j] == z[i][j]) {
-            z[i+1][j] = z[i][j] * 2;
-            z[i][j] = "&nbsp;";
-            moved = 1;
+  var moved = false;
+  var divs = document.getElementsByTagName("div");
+  for (var x = 2; x < 5; x++) {
+    for (var i = divs.length - 1; i > -1; i--) {
+      if (divs[i].x == x) {
+        var isMoved;
+        do {
+          var oldX = divs[i].x;
+          var oldY = divs[i].y;
+          var newX = parseInt(divs[i].x) - 1;
+          var newY = divs[i].y;
+          isMoved = moveBlock(oldX, oldY, newX, newY);
+          if (isMoved) {
+            moved = true;
           }
         }
+        while (isMoved && divs[i] != null);
       }
     }
   }
-  if(moved == 1) {
-    addNum(z);
+  if (moved) {
     swipeSound.play();
+    newBlock();
   }
-  displayGrid(z);
+}
+
+function moveBlock(x1, y1, x2, y2) {
+  var divs = document.getElementsByTagName("div");
+  var tds = document.getElementsByTagName("td");
+  var occupied = false;
+  var block;
+  var moved = false;
+  for (var i = 0; i < divs.length; i++) {
+    if (divs[i].x == x1 && divs[i].y == y1) {
+      block = divs[i];
+    }
+  }
+  for (var i = 0; i < divs.length; i++) {
+    if (divs[i].x == x2 && divs[i].y == y2) {
+      occupied = true;
+      var amt = block.childNodes[0].innerHTML;
+      var amt2 = divs[i].childNodes[0].innerHTML
+      if (amt == amt2) {
+        divs[i].childNodes[0].innerHTML *= 2;
+        divs[i].className = "class" + (amt2 * 2);
+        for (var j = 0; j < tds.length; j++) {
+          if (tds[j].getAttribute("x") == x2 && tds[j].getAttribute("y") == y2) {
+            var x = tds[j].offsetLeft;
+            var y = tds[j].offsetTop;
+            block.style.left = x;
+            block.style.top = y;
+            block.x = tds[j].getAttribute("x");
+            block.y = tds[j].getAttribute("y");
+          }
+        }
+        block.x = 0;
+        block.y = 0;
+        block.addEventListener("transitionend", function() {block.parentNode.removeChild(block); });
+        moved = true;
+      }
+    }
+  }
+  if (occupied == false) {
+    for (var j = 0; j < tds.length; j++) {
+      if (tds[j].getAttribute("x") == x2 && tds[j].getAttribute("y") == y2) {
+        var x = tds[j].offsetLeft;
+        var y = tds[j].offsetTop;
+        block.style.left = x;
+        block.style.top = y;
+        block.x = tds[j].getAttribute("x");
+        block.y = tds[j].getAttribute("y");
+        moved = true;
+      }
+    }
+  }
+  if (moved == true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function removeBlock(block) {
+  block.parentNode.removeChild(block);
 }

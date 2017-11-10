@@ -4,10 +4,22 @@
     <script src="2048.js"></script>
   </head>
   <body>
-    <button onclick="createGrid()">New Game</button>
-    <div id = "grid">
-
-    </div>
+    <section id = "grid">
+      <table>
+        <tr>
+          <td x = 1 y = 1></td><td x = 1 y = 2></td><td x = 1 y = 3></td><td x = 1 y = 4></td>
+        </tr>
+        <tr>
+          <td x = 2 y = 1></td><td x = 2 y = 2></td><td x = 2 y = 3></td><td x = 2 y = 4></td>
+        </tr>
+        <tr>
+          <td x = 3 y = 1></td><td x = 3 y = 2></td><td x = 3 y = 3></td><td x = 3 y = 4></td>
+        </tr>
+        <tr>
+          <td x = 4 y = 1></td><td x = 4 y = 2></td><td x = 4 y = 3></td><td x = 4 y = 4></td>
+        </tr>
+    </section>
+    <button id = "gameButton" onclick="newGame()">New Game</button>
     <p id = "test"></p>
   </body>
 </html>
