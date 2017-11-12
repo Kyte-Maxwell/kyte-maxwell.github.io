@@ -1,11 +1,16 @@
 body {
-  background-color: lightgrey;
+  background-color: teal;
   overflow: hidden;
 }
 
 td {
-  background-color: darkgrey;
+  background-color: lightblue;
   text-align: center;
+}
+
+p {
+  color: purple;
+  font: 2vmin georgia;
 }
 
 table {
@@ -13,32 +18,77 @@ table {
   height:100vmin;
 }
 
-section {
+#grid {
   width:100%;
   height:100%;
 }
 
-button {
-  height: 50px;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  transition: background-color 5s, color 2s;
-  background-color: gray;
-  color: black;
-  border: 1px solid black;
+@media screen and (orientation:portrait) {
+  p {
+    position: absolute;
+    height: 100px;
+    width: 100%;
+    bottom: 0;
+    display: table-cell;
+    vertical-align: bottom;
+  }
+
+  button {
+    height: 50px;
+    width: 33%;
+    position: absolute;
+    bottom: 0;
+    background-color: lightblue;
+    color: purple;
+    border: 1px solid black;
+    border-radius: 25px;
+    font: .75em georgia;
+  }
+
+  #gameButton {
+    left: 0;
+  }
+
+  #saveButton {
+    left: 33vmin;
+  }
+
+  #loadButton {
+    left: 66vmin;
+  }
 }
 
-button.gameStart {
-  background-color: transparent;
-  color: transparent;
-  border: none;
-  outline: none;
-}
+@media screen and (orientation:landscape) {
+  p {
+    position: absolute;
+    height: 100%;
+    width: 25vmin;
+    right: 50px;
+  }
 
-button:hover {
-  border: 1px solid black;
-  color: black;
+  button {
+    height: 33%;
+    width: 50px;
+    position: absolute;
+    right: 0;
+    background-color: lightblue;
+    color: purple;
+    border: 1px solid black;
+    border-radius: 25px;
+    font: .75em georgia;
+  }
+
+  #gameButton {
+    top: 0;
+  }
+
+  #saveButton {
+    top: 33vmin;
+  }
+
+  #loadButton {
+    top: 66vmin;
+  }
 }
 
 div {
@@ -48,9 +98,10 @@ div {
   position: absolute;
   border: 1px solid black;
   line-height: 22vmin;
-  transition: left .5s, top .5s;
+  transition: left .5s, top .5s, background-color .5s;
   margin-left: 20px;
   margin-top: 20px;
+  border-radius: 5vmin;
 }
 
 span {
@@ -59,9 +110,31 @@ span {
   text-align: center;
 }
 
+canvas {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  animation-name: winLose;
+  animation-duration: 1s;
+  animation-direction: reverse;
+}
+
+@keyframes winLose {
+  from {opacity:1;}
+  to {opacity:0;}
+}
+
 div.class2 {
   background-color: brown;
   font-size: 3vmin;
+  animation-name: appear;
+  animation-duration: .5s;
+  animation-direction: reverse;
+}
+
+@keyframes appear {
+  from {height:22vmin;line-height:22vmin;font-size:3vmin;}
+  to {height:0vmin;line-height:0vmin;font-size:0vmin;}
 }
 
 div.class4 {
@@ -105,11 +178,17 @@ div.class512 {
 }
 
 div.class1024 {
-  background-color: darkgrey;
+  background-color: cyan;
   font-size: 12vmin;
 }
 
 div.class2048 {
   background-color: gold;
   font-size: 13vmin;
+}
+
+div.class0 {
+  background-color: transparent;
+  color: transparent;
+  border: none;
 }

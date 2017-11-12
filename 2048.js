@@ -14,14 +14,17 @@ document.onkeydown = function(a) {
     case 40:
       down();
       break;
-    case 32:
-      space();
-      break;
   }
 }
 
 var gameState = 1;
+var highest = 2;
 var swipeSound = new Audio('2048swipe.mp3');
+var jingle1 = new Audio('2048jingle1.mp3');
+var jingle2 = new Audio('2048jingle2.mp3');
+var loseSound = new Audio('2048lose.mp3');
+var win = new Audio('2048win.mp3');
+var lose = {left: 1, right: 1, up: 1, down: 1};
 
 document.addEventListener('touchstart', touchStart, false);
 document.addEventListener('touchmove', touchMove, false);
@@ -31,11 +34,14 @@ function newGame() {
   for (var i = divs.length - 1; i > -1; i--) {
     divs[i].parentNode.removeChild(divs[i]);
   }
+  var canvas = document.getElementsByTagName('canvas');
+  for (var i = canvas.length - 1; i > -1; i--) {
+    canvas[i].parentNode.removeChild(canvas[i]);
+  }
+  hasMoved();
   newBlock();
   gameState = 2;
-  if (window.innerHeight < window.innerWidth) {
-    document.getElementById("gameButton").className = "gameStart";
-  }
+  highest = 2;
 }
 
 function newBlock() {
@@ -43,7 +49,7 @@ function newBlock() {
   while (!done) {
     var newBlock = document.createElement('div');
     newBlock.innerHTML = "<span>2</span>";
-    newBlock.className = "class2";
+    newBlock.className = "class0";
     var xGrid = Math.floor((Math.random() * 4));
     var yGrid = Math.floor((Math.random() * 4) + 1);
     newBlock.x = (xGrid + 1);
@@ -63,17 +69,11 @@ function newBlock() {
       newBlock.style.left = x;
       newBlock.style.top = y;
       var grid = document.getElementById("grid");
-      grid.appendChild(newBlock);
+      var block = grid.appendChild(newBlock);
+      block.className = "class2";
+      checkLose();
       done = true;
     }
-  }
-}
-
-function space() {
-  var divs = document.getElementsByTagName("div");
-  for (var i = 0; i < divs.length; i++) {
-    divs[i].childNodes[0].innerHTML *= 2;
-    divs[i].className = "class" + divs[i].childNodes[0].innerHTML;
   }
 }
 
@@ -111,39 +111,55 @@ function touchMove(touchEvent) {
 function displayWin() {
   var canvas = document.createElement("canvas");
   canvas.id = "winCanvas";
-  canvas.width = "415";
-  canvas.height = "150";
-  canvas.style = "border:1px solid black";
+  var size;
+  if (window.innerWidth > window.innerHeight) {
+    size = window.innerHeight;
+  } else {
+    size = window.innerWidth;
+  }
+  canvas.width = size;
+  canvas.height = size;
   var context = canvas.getContext("2d");
-  var fillColor = context.createLinearGradient(0,0,415,0);
-  fillColor.addColorStop(0,"orange");
-  fillColor.addColorStop(1,"blue");
+  var fillColor = context.createLinearGradient(0,0,size,0);
+  fillColor.addColorStop(0,'rgba(255,100,100,0.5)');
+  fillColor.addColorStop(1,'rgba(100,100,255,0.5)');
   context.fillStyle = fillColor;
-  context.fillRect(0,0,415,150);
-  context.font = "40px Courier";
+  context.fillRect(0,0,size,size);
+  context.font = "100px Georgia";
   context.fillStyle = "yellow";
-  context.fillText("You Win!",125,85);
+  context.textAlign = "center";
+  context.fillText("You Win!", size * .5, size * .5);
   var grid = document.getElementById("grid");
   grid.appendChild(canvas);
+  gameState = 1;
+  win.play();
 }
 
 function displayLose() {
   var canvas = document.createElement("canvas");
   canvas.id = "winCanvas";
-  canvas.width = "415";
-  canvas.height = "150";
-  canvas.style = "border:1px solid black";
+  var size;
+  if (window.innerWidth > window.innerHeight) {
+    size = window.innerHeight;
+  } else {
+    size = window.innerWidth;
+  }
+  canvas.width = size;
+  canvas.height = size;
   var context = canvas.getContext("2d");
-  var fillColor = context.createLinearGradient(0,0,415,0);
-  fillColor.addColorStop(0,"black");
-  fillColor.addColorStop(1,"gray");
+  var fillColor = context.createLinearGradient(0,0,size,0);
+  fillColor.addColorStop(0,'rgba(0,0,0,0.5)');
+  fillColor.addColorStop(1,'rgba(100,100,100,0.5)');
   context.fillStyle = fillColor;
-  context.fillRect(0,0,415,150);
-  context.font = "40px Verdana";
+  context.fillRect(0,0,size,size);
+  context.font = "100px Verdana";
   context.strokeStyle = "white";
-  context.strokeText("You Lose",125,85);
+  context.textAlign = "center";
+  context.strokeText("You Lose", size * .5, size * .5);
   var grid = document.getElementById("grid");
   grid.appendChild(canvas);
+  gameState = 1;
+  loseSound.play();
 }
 
 function left() {
@@ -170,9 +186,14 @@ function left() {
       }
     }
   }
-  if (moved) {
+  if (moved && gameState == 2) {
     swipeSound.play();
     newBlock();
+    hasMoved();
+  }
+  if (!moved) {
+    lose[left] = 0;
+    checkLose();
   }
 }
 
@@ -200,9 +221,14 @@ function right() {
       }
     }
   }
-  if (moved) {
+  if (moved && gameState == 2) {
     swipeSound.play();
     newBlock();
+    hasMoved();
+  }
+  if (!moved) {
+    lose[right] = 0;
+    checkLose();
   }
 }
 
@@ -230,9 +256,14 @@ function down() {
       }
     }
   }
-  if (moved) {
+  if (moved && gameState == 2) {
     swipeSound.play();
     newBlock();
+    hasMoved();
+  }
+  if (!moved) {
+    lose[down] = 0;
+    checkLose();
   }
 }
 
@@ -260,9 +291,14 @@ function up() {
       }
     }
   }
-  if (moved) {
+  if (moved && gameState == 2) {
     swipeSound.play();
     newBlock();
+    hasMoved();
+  }
+  if (!moved) {
+    lose[up] = 0;
+    checkLose();
   }
 }
 
@@ -283,6 +319,11 @@ function moveBlock(x1, y1, x2, y2) {
       var amt = block.childNodes[0].innerHTML;
       var amt2 = divs[i].childNodes[0].innerHTML
       if (amt == amt2) {
+        if (amt2 * 2 > highest) {
+          newHighest(amt2 * 2);
+        } else {
+          jingle1.play();
+        }
         divs[i].childNodes[0].innerHTML *= 2;
         divs[i].className = "class" + (amt2 * 2);
         for (var j = 0; j < tds.length; j++) {
@@ -295,8 +336,9 @@ function moveBlock(x1, y1, x2, y2) {
             block.y = tds[j].getAttribute("y");
           }
         }
-        block.x = 0;
-        block.y = 0;
+        block.x = null;
+        block.y = null;
+        block.className = "class0";
         block.addEventListener("transitionend", function() {block.parentNode.removeChild(block); });
         moved = true;
       }
@@ -322,6 +364,110 @@ function moveBlock(x1, y1, x2, y2) {
   }
 }
 
+function newHighest(amt) {
+  jingle2.play();
+  highest = amt;
+  if (amt == 2048) {
+    displayWin();
+  }
+  getFact("http://numbersapi.com/" + highest + "/math");
+}
+
+function checkLose() {
+  if (!left && !right && !up && !down) {
+    displayLose();
+  }
+}
+
 function removeBlock(block) {
   block.parentNode.removeChild(block);
+}
+
+function getFact(url) {
+  quizURL = url;
+  var variable = new XMLHttpRequest();
+  variable.onreadystatechange = function() {
+     if (this.readyState == 4 && this.status == 200) {
+         setFact(this.responseText);
+     }
+  };
+  variable.open("GET", url, true);
+  variable.send();
+}
+
+function setFact(text) {
+  document.getElementById("fact").innerHTML = text;
+}
+
+function hasMoved() {
+  lose[up] = 1;
+  lose[down] = 1;
+  lose[right] = 1;
+  lose[left] = 1;
+}
+
+function checkLose() {
+  if (lose[up] == 0 && lose[down] == 0 && lose[left] == 0 && lose[right] == 0) {
+    displayLose();
+  }
+}
+
+function saveGame() {
+  var divs = document.getElementsByTagName("div");
+  var saveData = [];
+  for (var i = 0; i < divs.length; i++) {
+    if (divs[i].x != null && divs[i].y != null) {
+      var block = {class: divs[i].childNodes[0].innerHTML, x: divs[i].x, y: divs[i].y};
+      saveData.push(block);
+    }
+  }
+  var saveString = JSON.stringify(saveData);
+  if (typeof(Storage) !== "undefined") {
+    localStorage.setItem("gameSave", saveString);
+    document.getElementById("fact").innerHTML = "Game saved.";
+  } else {
+    document.getElementById("fact").innerHTML = "Error saving game.";
+  }
+}
+
+function loadGame() {
+    if (localStorage.getItem("gameSave") != null) {
+      var divs = document.getElementsByTagName('div');
+      for (var i = divs.length - 1; i > -1; i--) {
+        divs[i].parentNode.removeChild(divs[i]);
+      }
+      var canvas = document.getElementsByTagName('canvas');
+      for (var i = canvas.length - 1; i > -1; i--) {
+        canvas[i].parentNode.removeChild(canvas[i]);
+      }
+      hasMoved();
+      gameState = 2;
+      highest = 2;
+    var saveString = localStorage.getItem("gameSave");
+    var saveArray = JSON.parse(saveString);
+    for (var j = 0; j < saveArray.length; j++) {
+      setBlock(saveArray[j].class, saveArray[j].x, saveArray[j].y);
+    }
+    localStorage.removeItem("gameSave");
+  } else {
+    document.getElementById("fact").innerHTML = "Save data not found.";
+  }
+}
+
+function setBlock(blockClass, xGrid, yGrid) {
+  var newBlock = document.createElement('div');
+  newBlock.innerHTML = "<span>" + blockClass + "</span>";
+  newBlock.className = "class0";
+  newBlock.x = (xGrid);
+  newBlock.y = (yGrid);
+  var trs = document.getElementsByTagName("tr");
+  var space = trs[xGrid - 1].childNodes[yGrid];
+  var x = space.offsetLeft;
+  var y = space.offsetTop;
+  newBlock.style.left = x;
+  newBlock.style.top = y;
+  var grid = document.getElementById("grid");
+  var block = grid.appendChild(newBlock);
+  block.className = "class" + blockClass;
+  checkLose();
 }
